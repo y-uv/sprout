@@ -6,6 +6,7 @@ from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
 from PySide6.QtCore import Qt, Slot, QMimeData
 from PySide6.QtGui import QFont, QPalette, QColor, QDrag
 from .waveform import WaveformWidget
+from .history_panel import HistoryPanel
 from ..config import Config
 
 class MainWindow(QMainWindow):
@@ -138,6 +139,11 @@ class MainWindow(QMainWindow):
         self.status_label.setStyleSheet(f"color: {Config.ACCENT_COLOR};")
         layout.addWidget(self.status_label)
 
+        # History panel (below controls)
+        self.history_panel = HistoryPanel()
+        self.history_panel.setFixedHeight(150)  # Shorter height
+        layout.addWidget(self.history_panel)
+
         # Connect waveform signals
         self.waveform.playbackStarted.connect(self.on_playback_started)
         self.waveform.playbackStopped.connect(self.on_playback_stopped)
@@ -187,6 +193,10 @@ class MainWindow(QMainWindow):
         self.waveform.set_audio_data(audio_data, str(file_path) if file_path else None)
         self.play_btn.setEnabled(True)
         self.stop_btn.setEnabled(False)
+        
+        # Add to history if file was saved
+        if file_path:
+            self.history_panel.add_history_item(str(file_path))
 
     @Slot()
     def update_duration_label(self):
@@ -202,3 +212,10 @@ class MainWindow(QMainWindow):
     def on_playback_stopped(self):
         self.play_btn.setEnabled(True)
         self.stop_btn.setEnabled(False)
+
+    def closeEvent(self, event):
+        """Handle application close event."""
+        # Stop any playing audio
+        if hasattr(self, 'waveform'):
+            self.waveform.stop_playback()
+        super().closeEvent(event)

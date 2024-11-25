@@ -25,11 +25,11 @@ class Config:
     BOS_TOKEN_ID = 2048  # From model config
     
     # UI settings
-    WINDOW_WIDTH = 800
-    WINDOW_HEIGHT = 600  # Reduced height for more compact UI
+    WINDOW_WIDTH = 900
+    WINDOW_HEIGHT = 700
     MAX_PROMPT_LENGTH = 500
-    UI_SPACING = 12      # Reduced spacing
-    UI_MARGIN = 16       # Reduced margin
+    UI_SPACING = 12
+    UI_MARGIN = 16
     
     # Theme colors (Forest theme)
     BACKGROUND_COLOR = "#3c6d4e"  # Dark forest green
@@ -40,10 +40,14 @@ class Config:
     PLAYHEAD_COLOR = "#d4e7dc"    # Very light green for playhead
     
     # Waveform settings
-    WAVEFORM_HEIGHT = 120         # Reduced height
-    WAVEFORM_PADDING = 16         # Reduced padding
+    WAVEFORM_HEIGHT = 120
+    WAVEFORM_PADDING = 16
     WAVEFORM_LINE_WIDTH = 1
     PLAYHEAD_WIDTH = 2
+    
+    # History settings
+    HISTORY_HEIGHT = 150
+    HISTORY_ITEM_HEIGHT = 60
     
     # Paths
     ROOT_DIR = Path(__file__).parent.parent
@@ -52,6 +56,7 @@ class Config:
     
     # Audio settings
     EXPORT_FORMAT = "wav"
+    FADE_MS = 20  # Fade duration in milliseconds
     
     @classmethod
     def ensure_directories(cls):
@@ -62,14 +67,11 @@ class Config:
     @classmethod
     def get_samples_per_token(cls) -> float:
         """Calculate approximate samples per token based on model constraints."""
-        # This is a rough estimation - the model's internal representation
-        # might be different
         max_duration = 30  # Maximum duration the model is typically trained on
         return (max_duration * cls.SAMPLE_RATE) / cls.MAX_POSITION_EMBEDDINGS
         
-    # UI Style templates
     @classmethod
-    def get_button_style(cls, primary=False):
+    def get_button_style(cls, primary=False) -> str:
         """Get styled button CSS."""
         return f"""
             QPushButton {{
@@ -91,7 +93,7 @@ class Config:
         """
     
     @classmethod
-    def get_slider_style(cls):
+    def get_slider_style(cls) -> str:
         """Get styled slider CSS."""
         return f"""
             QSlider {{
