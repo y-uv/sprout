@@ -65,6 +65,7 @@ class WaveformWidget(QWidget):
         # Visual settings
         self.waveform_color = QColor(Config.WAVEFORM_COLOR)
         self.playhead_color = QColor(Config.PLAYHEAD_COLOR)
+        self.line_width = Config.WAVEFORM_LINE_WIDTH  # Make line width configurable
         self.setMouseTracking(True)  # Enable mouse tracking for hover effects
         
         # Initialize gradient
@@ -294,9 +295,9 @@ class WaveformWidget(QWidget):
             # Draw filled waveform with gradient
             painter.fillPath(path, self.gradient)
 
-            # Draw outline
+            # Draw outline with configurable line width
             pen = QPen(self.waveform_color.darker(120))
-            pen.setWidth(Config.WAVEFORM_LINE_WIDTH)
+            pen.setWidth(self.line_width)  # Use instance line width
             painter.strokePath(path, pen)
 
             # Draw playhead if playing

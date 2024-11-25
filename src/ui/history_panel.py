@@ -16,12 +16,7 @@ class HistoryWaveform(WaveformWidget):
         super().__init__(parent)
         self.is_looping = False  # Override to disable looping
         self.setFixedHeight(40)  # Smaller height for history items
-
-    def stop_playback(self):
-        """Override to ensure clean thread shutdown."""
-        if self.playback_timer.isActive():
-            self.playback_timer.stop()
-        super().stop_playback()
+        self.line_width = 7  # Thicker lines for history waveforms
 
 class HistoryItem(QFrame):
     deleted = Signal(str)  # Emits path when deleted
@@ -57,7 +52,6 @@ class HistoryItem(QFrame):
                 background-color: {Config.SECONDARY_COLOR};
                 color: {Config.TEXT_COLOR};
                 border: none;
-                border-radius: 4px;
                 padding: 4px;
                 font-size: 10px;
             }}
@@ -78,8 +72,7 @@ class HistoryItem(QFrame):
         self.setStyleSheet(f"""
             HistoryItem {{
                 background-color: {Config.SECONDARY_COLOR};
-                border-radius: 4px;
-                margin: 2px;
+                border: 1px solid {Config.ACCENT_COLOR};
             }}
         """)
 
@@ -120,8 +113,8 @@ class HistoryPanel(QScrollArea):
         self.content_widget = QWidget()
         self.content_layout = QVBoxLayout(self.content_widget)
         self.content_layout.setAlignment(Qt.AlignTop)
-        self.content_layout.setSpacing(4)
-        self.content_layout.setContentsMargins(4, 4, 4, 4)
+        self.content_layout.setSpacing(0)  # No spacing between items
+        self.content_layout.setContentsMargins(1, 1, 1, 1)  # Minimal margins
 
         # Setup scroll area
         self.setWidget(self.content_widget)
@@ -129,23 +122,17 @@ class HistoryPanel(QScrollArea):
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
 
-        # Add title
-        title = QLabel("History")
-        title.setAlignment(Qt.AlignCenter)
-        title.setStyleSheet(f"""
-            color: {Config.ACCENT_COLOR};
-            font-size: 14px;
-            font-weight: bold;
-            padding: 4px;
-            background-color: {Config.BACKGROUND_COLOR};
-        """)
-        self.content_layout.addWidget(title)
-
         # Style
+        self.content_widget.setStyleSheet(f"""
+            QWidget {{
+                background-color: {Config.BACKGROUND_COLOR};
+            }}
+        """)
+        
         self.setStyleSheet(f"""
             QScrollArea {{
                 background-color: {Config.BACKGROUND_COLOR};
-                border: none;
+                border: 1px solid {Config.SECONDARY_COLOR};
                 margin: 0px;
             }}
             QScrollBar:vertical {{

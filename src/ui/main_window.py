@@ -38,7 +38,6 @@ class MainWindow(QMainWindow):
             font-weight: bold;
             color: {Config.ACCENT_COLOR};
             margin-bottom: {Config.UI_SPACING // 2}px;
-            font-family: 'Segoe UI', 'Inter', sans-serif;
         """)
         header_layout.addWidget(title)
 
@@ -156,12 +155,14 @@ class MainWindow(QMainWindow):
         
         # Set the application style
         self.setStyleSheet(f"""
+            * {{
+                font-family: 'Courier New', monospace;
+            }}
             QMainWindow {{
                 background-color: {Config.BACKGROUND_COLOR};
             }}
             QWidget {{
                 color: {Config.TEXT_COLOR};
-                font-family: 'Segoe UI', 'Inter', sans-serif;
             }}
             QLineEdit {{
                 padding: 8px 12px;
